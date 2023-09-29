@@ -1,0 +1,7 @@
+# Register
+method : Post   path : /auth
+Request Body : firstname ,lastname , email or mobile ,password , confirmpassword
+Response : 
+success= status 201  => object { accessToken: String }
+error = status 400 {message : String}
+serverError = status 500 { message : String}
