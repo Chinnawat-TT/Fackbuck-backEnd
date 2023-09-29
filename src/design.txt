@@ -8,3 +8,6 @@ serverError = status 500 { message : String}
 
 # Login
 method : POST  path :/auth/login
+Request Body : emailOrMobile,password
+Response :
+success = status 200 => object { id : Number , findFirst: String , lastName : String}
