@@ -18,6 +18,10 @@ const  registerScema = Joi.object({
         then: Joi.string().default(Joi.ref("emailOrMobile")),
       }),
     });
-
 exports.registerScema =registerScema;
 
+const loginSchema= Joi.object({
+  emailOrMobile :Joi.string().required(),
+  password : Joi.string().required()
+})
+exports.loginSchema =loginSchema;
