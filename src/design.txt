@@ -2,8 +2,8 @@
 method : Post   path : /auth/register
 Request Body : firstname ,lastname , email or mobile ,password , confirmpassword
 Response : 
-success= status 201  => object { accessToken: String }
-error = status 400 {message : String}
+success= status 201  => object { accessToken: String  ,userdata }
+error = status 400 { message : String , emailOrMobileExist : true }
 serverError = status 500 { message : String}
 
 # Login
@@ -11,3 +11,14 @@ method : POST  path :/auth/login
 Request Body : emailOrMobile,password
 Response :
 success = status 200 => object { id : Number , findFirst: String , lastName : String}
+error = status 400 {message : String}
+serverError = status 500 { message : String}
+
+# Get Authenticated user
+method : GET path : /auth/me
+Request Header : Authorization Bearer ACCESS_TOKEN 
+Response : 
+success => status 200 => object user { id : Number , findFirst: String , lastName : String}
+error = status 401 {message : String}
+serverError = status 500 { message : String}
+

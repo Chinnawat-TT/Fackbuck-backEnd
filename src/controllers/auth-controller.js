@@ -4,6 +4,7 @@ const { registerScema, loginSchema } = require("../validators/auth-validator");
 const prisma = require("../models/prisma");
 const createError = require("../utils/create-error");
 
+// ############ Register #####################
 exports.register = async (req, res, next) => {
   try {
     const { value, error } = registerScema.validate(req.body);
@@ -21,12 +22,13 @@ exports.register = async (req, res, next) => {
       process.env.JWT_SECRET_KEY || "uyjhjqawergt",
       { expiresIn: process.env.JWT_EXPIRE }
     );
-
-    res.status(201).json({ accessToken });
+    delete user.password
+    res.status(201).json({ accessToken ,user});
   } catch (err) {
     next(err);
   }
 };
+// #######################################
 
 // ############# login ###################
 exports.login = async (req, res, next) => {
@@ -48,6 +50,7 @@ exports.login = async (req, res, next) => {
         return next(createError('Invalid credential',400))
     }
     const isMatch = await bcrypt.compare(value.password , user.password)
+    // console.log(isMatch, "ismath")
     if(!isMatch){
         return next(createError('Invalid credential',400))
     }
@@ -58,10 +61,17 @@ exports.login = async (req, res, next) => {
       process.env.JWT_SECRET_KEY || "uyjhjqawergt",
       { expiresIn: process.env.JWT_EXPIRE }
     );
-    res.status(200).json({ accessToken ,user});
-    
-    delete user.password
+    console.log(accessToken)
+    delete user.password;
+    res.status(200).json({ accessToken , user});
   } catch (err) {
     next(err);
   }
 };
+// ##########################################
+
+exports.getMe = (req,res,next)=>{
+
+        res.status(200).json({ user : req.user})
+
+}
