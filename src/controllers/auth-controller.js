@@ -45,12 +45,13 @@ exports.login = async (req, res, next) => {
         ],
       },
     });
-
+    console.log(user)
     if(!user){
         return next(createError('Invalid credential',400))
     }
     const isMatch = await bcrypt.compare(value.password , user.password)
     // console.log(isMatch, "ismath")
+    console.log(isMatch)
     if(!isMatch){
         return next(createError('Invalid credential',400))
     }
