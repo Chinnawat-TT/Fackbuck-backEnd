@@ -22,3 +22,43 @@ success => status 200 => object user { id : Number , findFirst: String , lastNam
 error = status 401 {message : String}
 serverError = status 500 { message : String}
 
+# Update profile/cover image
+method : PATH path : /user
+Request Header : Authorization Bearer ACCESS_TOKEN 
+Request Body : profileImage? , coverImage?
+Response :
+success => status 200 { profileImage?: String ,coverImage?: String }
+error => status 400,401 { message }
+serverError = status 500 { message }
+
+# GET user profile by id 
+method : get  path : /user/:userid
+Request Header : Authorization Bearer ACCESS_TOKEN 
+Response :
+success => status 200 { user :{ id :Number , firstName : String ....}}
+error => status 401 { message : String}
+serverError => status 500 { message : String}
+
+# Request Friend
+method : POST path : /friend/:receiverId
+Request Header : Authorization Bearer ACCESS_TOKEN 
+Response :
+success => status 200 {message : String}
+error => status 400,401 {message : String}
+serverError => status 500 {message : String}
+
+# Delete friend
+method : DELETE path : /friend/:tagetUserId
+Request Header : Authorization Bearer ACCESS_TOKEN 
+Response :
+success => status 200 {message : String}
+error => status 400,401 {message : String}
+serverError => status 500 {message : String}
+
+# Access friend
+method : PATCH  path : /friend/:requesterId
+Request Header : Authorization Bearer ACCESS_TOKEN 
+Response :
+success => status 200 {message : String}
+error => status 400,401 {message : String}
+serverError => status 500 {message : String}

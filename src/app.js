@@ -4,9 +4,10 @@ const cors = require('cors')
 const morgan = require('morgan')
 
 const notFoundMiddleware = require('./middleware/not-found')
-const errorMiddleware =require('./middleware/error')
+const errorMiddleware = require('./middleware/error')
 const rateLimitMiddleware = require('./middleware/rate-limit')
-const authRoute =require('./routes/auth-route')
+const authRoute = require('./routes/auth-route')
+const userRoute = require('./routes/user-route')
 const app = express();
 
 
@@ -14,8 +15,10 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(rateLimitMiddleware);
 app.use(express.json());
+app.use(express.static('pubic'))// ใช้ในกรณีที่ต้องการเอารูปจาก server ไปใช่้เลย
 
 app.use('/auth' , authRoute)
+app.use('/user',userRoute)
 
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);

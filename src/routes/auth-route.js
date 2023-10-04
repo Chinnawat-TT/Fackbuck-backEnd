@@ -9,4 +9,5 @@ router.post('/register',authController.register)
 router.post('/login',authController.login)
 // router.use(authenticateMiddleware)
 router.get('/me' ,authenticateMiddleware, authController.getMe)
+
 module.exports=router
