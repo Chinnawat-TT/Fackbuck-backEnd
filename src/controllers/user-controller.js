@@ -3,7 +3,72 @@ const createError = require("../utils/create-error");
 const { upload } =require('../utils/cloudinary-service');
 const prisma = require("../models/prisma");
 const { checkUserIdSchema } = require('../validators/user-validator');
+const { AUTH_USER, UNKNOWN, STATUS_ACCEPTED, FRIEND, REQUESTER, RECEIVER } = require('../config/constans');
 
+
+const getTagetUserStatusWithAuthUser = async (tagetUserId , authUserId)=> {
+if(tagetUserId === authUserId) {
+  return AUTH_USER
+}
+const relationship = await prisma.friend.findFirst({
+  where :{
+    OR :[
+      { requesterId : tagetUserId , receiverId : authUserId},
+      { requesterId : authUserId , receiverId : tagetUserId}
+    ]
+  }
+})
+if (!relationship){
+    return UNKNOWN
+}
+
+if (relationship.status === STATUS_ACCEPTED){
+  return FRIEND
+}
+
+if(relationship.requesterId === authUserId){
+  return REQUESTER
+}
+
+return RECEIVER
+}
+const getTargetUserFriend = async (tagetUserId) =>{
+  // status accepted and (requester_id = tagetUserId or receiver_id = tagetUserId )
+  const relationship = await prisma.friend.findMany({
+    where :{
+      status : STATUS_ACCEPTED,
+      OR :[
+        {receiverId : tagetUserId },{requesterId : tagetUserId}
+      ]
+    }, select :{
+      requester : {
+        select : {
+          id :true,
+          firstName : true,
+          lastName :true,
+          email :true,
+          mobile : true,
+          profileImage : true,
+          coverImage :true
+        }
+      },
+      receiver : {
+        select : {
+          id :true,
+          firstName : true,
+          lastName :true,
+          email :true,
+          mobile : true,
+          profileImage : true,
+          coverImage :true
+        }
+      }
+    }
+  })
+
+  const friends = relationship.map( (el)=> el.requester.id === tagetUserId ? el.receiver : el.requester)
+  return friends
+}
 
 exports.updateProfile = async (req, res, next) => {
   try {
@@ -68,12 +133,43 @@ exports.getUserById = async (req,res,next)=>{
         id : userId
       }
     })
-
+    let status = null
+    let friends = null
     if(user){
       delete user.password
+      status = await getTagetUserStatusWithAuthUser(userId,req.user.id);
+      friends = await getTargetUserFriend(userId)
     }
-    
-    res.status(200).json({ user })
+
+    // if( req.user.id === userId){
+    //   status = AUTH_USER
+    // } else{
+    //   const relationship = await prisma.friend.findFirst({
+    //     where :{
+    //       OR :[
+    //         { requesterId : userId , receiverId : req.user.id},
+    //         { requesterId : req.user.id , receiverId : userId}
+    //       ]
+    //     }
+    //   })
+    //   if(relationship){
+    //     status = UNKNOWN
+    //   }else {
+    //     if( relationship.status === STATUS_ACCEPTED){
+    //       status = FRIEND
+    //     } else {
+    //       if (relationship.requesterId === userId){
+    //         status = REQUESTER
+    //       } else {
+    //         status = RECEIVER
+    //       }
+    //     }
+    //   }
+    // }
+    // userId  มาจาก params
+    // authId  มาจาก req.user.id
+
+    res.status(200).json({ user ,status , friends })
   } catch (err) {
     next(err)
   }
