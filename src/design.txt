@@ -93,3 +93,19 @@ Response :
 success => status 200 {message : String}
 error => status 400,401 {message : String}
 serverError => status 500 {message : String}
+
+# GET ALL POST INCLUDE POST FRIEND
+method : GET  path : /post/friend
+Request Header : Authorization Bearer ACCESS_TOKEN 
+Response :
+success => status 200 {posts : [{ id : Number, message : String, image :String ,user:{ id: Number,firstName:String ,lastName:String ...}}]}
+error => status 400,401 {message : String}
+serverError => status 500 {message : String}
+
+# TOGGLE LIKE
+method : POST  path : /postId/like
+Request Header : Authorization Bearer ACCESS_TOKEN 
+Response :
+success => status 200 {message : String}
+error => status 400,401 {message : String}
+serverError => status 500 {message : String}
