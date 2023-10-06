@@ -9,6 +9,7 @@ const rateLimitMiddleware = require('./middleware/rate-limit')
 const authRoute = require('./routes/auth-route')
 const userRoute = require('./routes/user-route')
 const friendRoute = require('./routes/friend-route')
+const postRoute =require('./routes/post-route')
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(express.static('pubic'))// ใช้ในกรณีที่ต้อ
 app.use('/auth' , authRoute)
 app.use('/user',userRoute)
 app.use('/friend',friendRoute)
+app.use('/post',postRoute)
 
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);

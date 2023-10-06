@@ -84,3 +84,12 @@ Response :
 success => status 200 {message : String}
 error => status 400,401 {message : String}
 serverError => status 500 {message : String}
+
+# Create post
+method : POST  path : /post
+Request Header : Authorization Bearer ACCESS_TOKEN 
+BODY : message? , image?
+Response :
+success => status 200 {message : String}
+error => status 400,401 {message : String}
+serverError => status 500 {message : String}
