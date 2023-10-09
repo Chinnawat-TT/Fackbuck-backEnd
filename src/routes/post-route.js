@@ -10,5 +10,5 @@ const router = express.Router()
 router.post('/',authenticateMiddleware ,uploadMiddleware.single('image'),postController.createPost)
 router.get('/friend',authenticateMiddleware,postController.getAllPostIncludeFriendPost)
 router.post('/:postId/like',authenticateMiddleware,likeController.toggleLike)
-
+router.delete('/:postId',authenticateMiddleware,postController.deletePost)
 module.exports = router
